@@ -41,10 +41,19 @@ exports.isUrlInList = function(site, callback){
   });
 };
 
-exports.addUrlToList = function(){
+exports.addUrlToList = function(site){
+  fs.appendFile(exports.paths.list, site, function(){
+    if(err){
+      throw err;
+    }
+  });
 };
 
-exports.isURLArchived = function(){
+exports.isURLArchived = function(site, callback){
+  fs.exists(exports.paths.archivedSites + '/' + site,
+            function(exists){
+              callback(exists);
+            });
 };
 
 exports.downloadUrls = function(){

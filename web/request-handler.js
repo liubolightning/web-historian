@@ -30,7 +30,28 @@ var getContent = function(req, res){
   }
 };
 
-// var createContent = function(req, res){};
+var checkContent = function(req, res){
+  var site = '';
+  req.on('data', function(data){
+    site +=  data;
+  });
+  req.on('end', function(){
+    archive.isUrlInList(site, function(isInList){
+      if(!isInList){
+        archive.addUrlToList(site);
+        helpers.sendHtml(res, archive.paths.siteAssets + '/loading.html');
+      }else{
+        archive.isUrlArchived(site, function(isArchived){
+          if(!isArchived){
+            helpers.sendHtml(res, archive.paths.siteAssets + '/loading.html');
+          }else{
+            helpers.sendHtml(res, archive.paths.archivedSites + req.url);
+          }
+        });
+      }
+    });
+  });
+};
 
 // var handleOptions = function(req, res){};
 
@@ -38,7 +59,7 @@ exports.handleRequest = function (req, res) {
 
   var actionMap ={
     "GET": getContent,
-    // "POST": createContent,
+    "POST": checkContent
     // "OPTIONS": handleOptions
   };
 
