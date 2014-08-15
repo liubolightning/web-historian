@@ -36,16 +36,17 @@ var checkContent = function(req, res){
     site +=  data;
   });
   req.on('end', function(){
+    site = site.slice(4);
     archive.isUrlInList(site, function(isInList){
       if(!isInList){
-        archive.addUrlToList(site);
-        helpers.sendHtml(res, archive.paths.siteAssets + '/loading.html');
+        archive.addUrlToList(site + '\n');
+        helpers.sendHtml(res, archive.paths.siteAssets + '/loading.html', 302);
       }else{
-        archive.isUrlArchived(site, function(isArchived){
+        archive.isURLArchived(site, function(isArchived){
           if(!isArchived){
-            helpers.sendHtml(res, archive.paths.siteAssets + '/loading.html');
+            helpers.sendHtml(res, archive.paths.siteAssets + '/loading.html', 302);
           }else{
-            helpers.sendHtml(res, archive.paths.archivedSites + req.url);
+            helpers.sendHtml(res, archive.paths.archivedSites + '/' + site);
           }
         });
       }

@@ -28,12 +28,13 @@ exports.send404 = function(res){
   exports.sendResponse(res, "Not Found", 404);
 };
 
-exports.sendHtml = function(res, url){
+exports.sendHtml = function(res, url, statusCode){
+  statusCode = statusCode || 200;
   fs.readFile(url, function(err, html){
     if(err){
       exports.send404(res);
     } else {
-      exports.sendResponse(res, html);
+      exports.sendResponse(res, html, statusCode);
     }
   });
 };
